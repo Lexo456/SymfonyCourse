@@ -24,12 +24,13 @@ class PostController extends AbstractController
             'posts' => $posts
         ]);
     }
+
     #[Route('/create', name: 'create')]
     public function create(Request $request, ManagerRegistry $manager)
     {
         $post = new Post();
 
-        $post->setTitle('This is going to be a title');
+        $form = $this->createForm(PostType::class, $post);
 
         $em = $manager->getManager();
 
@@ -37,7 +38,12 @@ class PostController extends AbstractController
 
         $em->flush();
 
-        return $this->redirect($this->generateUrl('post.index'));
+        return $this->render(
+            'post/create.html.twig',
+            [
+                'form' => $form
+            ]
+        );
     }
 
     /**
