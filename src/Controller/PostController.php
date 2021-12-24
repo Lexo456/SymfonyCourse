@@ -3,11 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Form\PostType;
 use App\Repository\PostRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bridge\Doctrine\ManagerRegistry as DoctrineManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,7 +25,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, ManagerRegistry $manager)
+    public function create(ManagerRegistry $manager):Response
     {
         $post = new Post();
 
@@ -48,7 +47,9 @@ class PostController extends AbstractController
 
     /**
      * @Route("/show/{id}", name="show")
-     * @param Post $post
+     * @param $id
+     * @param PostRepository $postRepository
+     * @return Response
      */
     public function show($id, PostRepository $postRepository): Response
     {
@@ -71,7 +72,7 @@ class PostController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash("success", "Post was removed");
+        $this->addFlash("success","The post was removed!");
 
         return $this->redirect($this->generateUrl('post.index'));
     }
