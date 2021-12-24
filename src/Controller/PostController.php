@@ -7,6 +7,7 @@ use App\Form\PostType;
 use App\Repository\PostRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,22 +26,28 @@ class PostController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(ManagerRegistry $manager):Response
+    public function create(Request $request,ManagerRegistry $manager):Response
     {
         $post = new Post();
 
         $form = $this->createForm(PostType::class, $post);
 
-        $em = $manager->getManager();
+        $form->handleRequest($request);
 
-        $em->persist($post);
+        if($form->isSubmitted()){
+            $em = $manager->getManager();
 
-        $em->flush();
+            $em->persist($post);
+
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('post.index'));
+        }
 
         return $this->render(
             'post/create.html.twig',
             [
-                'form' => $form
+                'form' => $form ->createView()
             ]
         );
     }
@@ -72,7 +79,7 @@ class PostController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash("success","The post was removed!");
+        $this->addFlash("success","The post $id was removed !");
 
         return $this->redirect($this->generateUrl('post.index'));
     }
