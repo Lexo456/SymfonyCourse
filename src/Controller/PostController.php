@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/post', name: 'post.')]
-
 class PostController extends AbstractController
 {
     #[Route('/', name: 'index')]
@@ -26,7 +25,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request,ManagerRegistry $manager):Response
+    public function create(Request $request, ManagerRegistry $manager): Response
     {
         $post = new Post();
 
@@ -34,7 +33,7 @@ class PostController extends AbstractController
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
             $em = $manager->getManager();
 
             $em->persist($post);
@@ -47,7 +46,7 @@ class PostController extends AbstractController
         return $this->render(
             'post/create.html.twig',
             [
-                'form' => $form ->createView()
+                'form' => $form->createView()
             ]
         );
     }
@@ -66,6 +65,7 @@ class PostController extends AbstractController
             'post' => $post
         ]);
     }
+
     /**
      * @Route("delete/{id}", name="delete")
      */
@@ -79,7 +79,7 @@ class PostController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash("success","The post $id was removed !");
+        $this->addFlash("success", "The post $id was removed !");
 
         return $this->redirect($this->generateUrl('post.index'));
     }
