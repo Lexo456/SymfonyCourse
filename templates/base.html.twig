@@ -39,6 +39,12 @@
 						<a class="nav-link" href="{{ path('post.index') }}">Post
 						</a>
 					</li>
+					{% if is_granted('ROLE_USER') %}
+						<li class="nav-item active float-end">
+							<a class="nav-link" href="{{ path('app_logout') }}">Log Out
+							</a>
+						</li>
+					{% endif %}
 				</ul>
 			</div>
 			</nav>
@@ -46,5 +52,4 @@
 			<div class="container"> {% block body %}{% endblock %}
 				</div>
 			</body>
-		</body>
 	</html>

@@ -71,6 +71,9 @@ class PostController extends AbstractController
      */
     public function remove($id, ManagerRegistry $manager, PostRepository $postRepository): Response
     {
+        $user = $this->getUser()->getUserIdentifier();
+
+
         $em = $manager->getManager();
 
         $post = $postRepository->find($id);
@@ -79,7 +82,7 @@ class PostController extends AbstractController
 
         $em->flush();
 
-        $this->addFlash("success", "The post $id was removed !");
+        $this->addFlash("success", "The post $id was removed by $user!");
 
         return $this->redirect($this->generateUrl('post.index'));
     }
