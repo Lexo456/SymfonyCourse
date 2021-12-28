@@ -47,7 +47,6 @@ class RegistrationController extends AbstractController
             $em = $manager->getManager();
 
             $em->persist($user);
-
             $em->flush();
 
             return $this->redirect($this->generateUrl('app_login'));
