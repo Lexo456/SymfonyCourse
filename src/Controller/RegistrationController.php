@@ -23,7 +23,7 @@ class RegistrationController extends AbstractController
             ->add('password', RepeatedType::class, options: [
                 'type' => PasswordType::class,
                 'required' => true,
-                'first_options'  => ['label' => 'Password'],
+                'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Confirm Password'],
             ])
             ->add('Register', SubmitType::class, [
@@ -31,12 +31,10 @@ class RegistrationController extends AbstractController
                     "class" => 'btn btn-success float-end'
                 ]
             ])
-
-            ->getForm()
-        ;
+            ->getForm();
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if ($form->isSubmitted()) {
 
             $data = $form->getData();
 
@@ -56,7 +54,7 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/index.html.twig', [
-            'form' => $form ->createView()
+            'form' => $form->createView()
         ]);
     }
 }
