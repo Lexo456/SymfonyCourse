@@ -38,11 +38,11 @@ class PostController extends AbstractController
             $em = $manager->getManager();
             /** @var UploadedFile $file */
             $file = $form->get('attachment')->getData();
-            if ($file){
+            if ($file) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $filename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();;
-                $file->move($this->getParameter('uploads_dir'),$filename);
+                $filename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+                $file->move($this->getParameter('uploads_dir'), $filename);
             }
             $post->setImage($filename);
             $em->persist($post);
@@ -80,7 +80,6 @@ class PostController extends AbstractController
     public function remove($id, ManagerRegistry $manager, PostRepository $postRepository): Response
     {
         $user = $this->getUser()->getUserIdentifier();
-
 
         $em = $manager->getManager();
 
