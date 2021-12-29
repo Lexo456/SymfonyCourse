@@ -23,6 +23,8 @@ class PostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p');
         $qb->select('p.title')
+            ->addSelect('c.name')
+            ->innerJoin('p.category', 'c')
             ->where('p.id = :id')
             ->setParameter('id', $id);
         return $qb->getQuery()->getResult();

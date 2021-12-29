@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use App\Services\FileUploader;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -16,18 +17,25 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[Route('/post', name: 'post.')]
 class PostController extends AbstractController
 {
+    private FileUploader $uploader;
+
+    public function __construct(FileUploader $uploader)
+    {
+        $this->uploader = $uploader;
+    }
+
     #[Route('/', name: 'index')]
     public function index(PostRepository $postRepository): Response
     {
         $posts = $postRepository->findAll();
-
+        $this->addFlash('success', 'Affiche OK');
         return $this->render('post/index.html.twig', [
             'posts' => $posts
         ]);
     }
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, ManagerRegistry $manager, SluggerInterface $slugger): Response
+    public function create(Request $request, ManagerRegistry $manager, FileUploader $fileUploader, SluggerInterface $slugger): Response
     {
         $post = new Post();
 
@@ -39,10 +47,7 @@ class PostController extends AbstractController
             /** @var UploadedFile $file */
             $file = $form->get('attachment')->getData();
             if ($file) {
-                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $filename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
-                $file->move($this->getParameter('uploads_dir'), $filename);
+                $filename = $fileUploader->uploadFile($file, $slugger);
             }
             $post->setImage($filename);
             $em->persist($post);
