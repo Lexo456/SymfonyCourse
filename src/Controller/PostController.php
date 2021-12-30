@@ -19,7 +19,7 @@ class PostController extends AbstractController
 {
     private FileUploader $uploader;
 
-    public function __construct(FileUploader $uploader)
+    public function __construct(FileUploader $uploader, ManagerRegistry $em)
     {
         $this->uploader = $uploader;
     }
@@ -42,6 +42,7 @@ class PostController extends AbstractController
         $form = $this->createForm(PostType::class, $post);
 
         $form->handleRequest($request);
+
         if ($form->isSubmitted()) {
             $em = $manager->getManager();
             /** @var UploadedFile $file */
@@ -71,9 +72,7 @@ class PostController extends AbstractController
      */
     public function show($id, PostRepository $postRepository): Response
     {
-        $post = $postRepository->findPostWithCategory($id);
-
-        dump($post);
+        $post = $postRepository->find($id);
         return $this->render('post/show.html.twig', [
             'post' => $post
         ]);
@@ -98,4 +97,21 @@ class PostController extends AbstractController
 
         return $this->redirect($this->generateUrl('post.index'));
     }
+
+
+    #[Route('/removeall', name: 'removeall')]
+    public function removeAll(ManagerRegistry $manager, PostRepository $postRepository): Response
+    {
+        $em = $manager->getManager();
+
+        $posts = $postRepository->findAll();
+
+        foreach ($posts as $post) {
+            $em->remove($post);
+        }
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('post.index'));
+    }
+
 }
