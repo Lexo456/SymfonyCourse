@@ -7,8 +7,10 @@ use App\Form\PostType;
 use App\Repository\PostRepository;
 use App\Services\FileUploader;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,10 +52,7 @@ class PostController extends AbstractController
             if ($file) {
                 $filename = $fileUploader->uploadFile($file, $slugger);
             }
-            $post->setImage($filename);
-            $em->persist($post);
-            $em->flush();
-            return $this->redirect($this->generateUrl('post.index'));
+            return $this->extracted($post, $filename, $em);
         }
 
         return $this->render(
@@ -62,6 +61,20 @@ class PostController extends AbstractController
                 'form' => $form->createView()
             ]
         );
+    }
+
+    /**
+     * @param Post $post
+     * @param string $filename
+     * @param ObjectManager $em
+     * @return RedirectResponse
+     */
+    public function extracted(Post $post, string $filename, ObjectManager $em): RedirectResponse
+    {
+        $post->setImage($filename);
+        $em->persist($post);
+        $em->flush();
+        return $this->redirect($this->generateUrl('post.index'));
     }
 
     /**
@@ -98,7 +111,6 @@ class PostController extends AbstractController
         return $this->redirect($this->generateUrl('post.index'));
     }
 
-
     #[Route('/removeall', name: 'removeall')]
     public function removeAll(ManagerRegistry $manager, PostRepository $postRepository): Response
     {
@@ -114,4 +126,18 @@ class PostController extends AbstractController
         return $this->redirect($this->generateUrl('post.index'));
     }
 
+    #[Route('/modify/{id}', name: 'modify')]
+    public function modify($id, ManagerRegistry $registry, PostRepository $postRepository, Request $request)
+    {
+        $modifiedForm = $this->createForm(PostType::class);
+        $modifiedForm->handleRequest($request);
+        $em = $registry->getManager();
+        $post = $em->getRepository(Post::class)->find($id);
+
+        return $this->render(
+            'post/create.html.twig', [
+            'form' => $modifiedForm->createView()
+        ]);
+
+    }
 }
