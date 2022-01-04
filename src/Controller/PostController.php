@@ -129,15 +129,16 @@ class PostController extends AbstractController
     #[Route('/modify/{id}', name: 'modify')]
     public function modify($id, ManagerRegistry $registry, PostRepository $postRepository, Request $request)
     {
-        $modifiedForm = $this->createForm(PostType::class);
-        $modifiedForm->handleRequest($request);
+
         $em = $registry->getManager();
         $post = $em->getRepository(Post::class)->find($id);
-
+        $form = $this->createForm(PostType::class, $post);
         return $this->render(
-            'post/create.html.twig', [
-            'form' => $modifiedForm->createView()
-        ]);
-
+            'post/modify.html.twig',
+            [
+                'form' => $form->createView()
+            ]
+        );
+        
     }
 }
