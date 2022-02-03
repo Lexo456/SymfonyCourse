@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection NullPointerExceptionInspection */
 
 namespace App\Controller;
 
@@ -19,12 +19,6 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[Route('/post', name: 'post.')]
 class PostController extends AbstractController
 {
-    private FileUploader $uploader;
-
-    public function __construct(FileUploader $uploader, ManagerRegistry $em)
-    {
-        $this->uploader = $uploader;
-    }
 
     #[Route('/', name: 'index')]
     public function index(PostRepository $postRepository): Response
@@ -123,7 +117,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/modify/{id}', name: 'modify')]
-    public function modify($id, ManagerRegistry $registry, PostRepository $postRepository, Request $request)
+    public function modify($id, ManagerRegistry $registry): Response
     {
 
         $em = $registry->getManager();

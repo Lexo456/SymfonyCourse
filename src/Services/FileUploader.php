@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Controller\PostController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -10,10 +11,15 @@ class FileUploader
 {
 
     private ParameterBagInterface $parameterBag;
+    private PostController $postController;
 
-    public function __construct(ParameterBagInterface $parameterBag)
+    public function __construct(
+        ParameterBagInterface $parameterBag,
+        PostController        $postController
+    )
     {
         $this->parameterBag = $parameterBag;
+        $this->postController = $postController;
     }
 
     public function uploadFile(UploadedFile $file, SluggerInterface $slugger)
