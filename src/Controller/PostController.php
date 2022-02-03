@@ -30,15 +30,13 @@ class PostController extends AbstractController
     public function index(PostRepository $postRepository): Response
     {
         $posts = $postRepository->findAll();
-        $this->addFlash('success', 'Affiche OK');
-        return $this->render('post/index.html.twig', [
-            'posts' => $posts
-        ]);
+        return $this->render('post/index.html.twig', ['posts' => $posts]);
     }
 
     #[Route('/create', name: 'create')]
     public function create(Request $request, ManagerRegistry $manager, FileUploader $fileUploader, SluggerInterface $slugger): Response
     {
+
         $post = new Post();
 
         $form = $this->createForm(PostType::class, $post);
@@ -86,9 +84,7 @@ class PostController extends AbstractController
     public function show($id, PostRepository $postRepository): Response
     {
         $post = $postRepository->find($id);
-        return $this->render('post/show.html.twig', [
-            'post' => $post
-        ]);
+        return $this->render('post/show.html.twig', ['post' => $post]);
     }
 
     /**
@@ -139,6 +135,6 @@ class PostController extends AbstractController
                 'form' => $form->createView()
             ]
         );
-        
+
     }
 }
