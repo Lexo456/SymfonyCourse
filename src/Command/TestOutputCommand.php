@@ -32,7 +32,7 @@ class TestOutputCommand extends Command
             ->addArgument('id', $this->postController ? InputArgument::REQUIRED, 'ID du post à supprimer')
     }
 
-    public function execute(InputInterface $input, OutputInterface $output, EntityManager $manager, PostRepository $postRepository): int
+    public function execute(InputInterface $input, OutputInterface $output, PostRepository $postRepository): int
     {
         $io = new SymfonyStyle($input, $output);
         $id = $input->getArgument('id');
