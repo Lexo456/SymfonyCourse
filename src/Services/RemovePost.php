@@ -9,10 +9,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RemovePost
 {
-    private PostController $postController;
+    private PostController $postController;aeffaef
 
-    public function __construct(PostController $postController)
+    public function __construct(PostController $postController, Conta)
     {
+        $this->container
         $this->postController = $postController;
     }
 faefaef
