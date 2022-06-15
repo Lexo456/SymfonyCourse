@@ -15,7 +15,7 @@ class RemovePost
     {
         $this->postController = $postController;
     }
-
+faefaef
     public function remove($id, ManagerRegistry $manager, PostRepository $postRepository): Response
     {
         $this->postController->remove($id, $manager, $postRepository);
